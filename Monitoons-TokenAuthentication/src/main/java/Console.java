@@ -3,7 +3,7 @@ import Autenticação.Token;
 
 import java.util.Scanner;
 
-public class Teste {
+public class Console {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Token token = new Token();
@@ -13,9 +13,9 @@ public class Teste {
         do {
             System.out.println("""
                     *-----------------------------Olá, bem vindo a Monitoons!------------------------------*
-                    1 - Cadastro
+                    1 - Gerar token
                     2 - Login
-                    3 - Gerar token
+                    3 - Esqueci o token
                     0 - Sair
                     *--------------------------------------------------------------------------------------*
                     """);
@@ -28,13 +28,12 @@ public class Teste {
                     break;
                 case 1 :
                     autenticacao.adicionarPergunta(token);
-                    token.gerarToken();
                     break;
                 case 2:
                     autenticacao.login(token);
                     break;
                 case 3:
-                    autenticacao.gerarNovoToken();
+                    autenticacao.gerarNovoToken(token);
                     break;
                 default:
                     System.out.println("Opção inválida");

@@ -9,10 +9,11 @@ public class Token {
     private Boolean isCreated = false;
     private LocalDateTime dataTokenGerado;
     private LocalDateTime tokenExpirado;
+
     public String gerarToken() {
 
         this.dataTokenGerado = LocalDateTime.now();
-        this.tokenExpirado = dataTokenGerado.plusMinutes(3);
+        this.tokenExpirado = this.dataTokenGerado.plusMinutes(2);
 
         int randomNumber1 = ThreadLocalRandom.current().nextInt(1,99);
         int randomNumber2 = ThreadLocalRandom.current().nextInt(1, 999);
@@ -39,18 +40,16 @@ public class Token {
                 *--------------------------------------------------------------------------------------*
                 """.formatted(token, formattedDateTime, formattedDateTimeExpiration));
         setCreated(true);
-
         return token;
     }
 
-    public Boolean tokenExpirado () {
-        if (LocalDateTime.now().isAfter(tokenExpirado)) {
+    public Boolean isExpirado() {
+        if(LocalDateTime.now().isAfter(this.getTokenExpirado())) {
             return true;
         } else {
             return false;
         }
     }
-
     public String getToken() {
         return token;
     }
