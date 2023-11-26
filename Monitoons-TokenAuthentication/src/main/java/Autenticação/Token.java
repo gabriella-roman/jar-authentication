@@ -1,30 +1,32 @@
 package Autenticação;
 
+import Conexao.Conexao;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Token {
     private String token;
-    private Boolean isCreated = false;
-    private LocalDateTime dataTokenGerado;
-    private LocalDateTime tokenExpirado;
+    private LocalDateTime dataHoraCriado;
+    private LocalDateTime dataHoraExpira;
 
-    public String gerarToken() {
+    Conexao con = new Conexao();
+    public String gerarToken(Usuario usuario) {
 
-        this.dataTokenGerado = LocalDateTime.now();
-        this.tokenExpirado = this.dataTokenGerado.plusMinutes(2);
+        this.dataHoraCriado = LocalDateTime.now();
+        this.dataHoraExpira = this.dataHoraCriado.plusMinutes(5);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String formattedDateTime = dataHoraCriado.format(formatter);
+        String formattedDateTimeExpiration = dataHoraExpira.format(formatter);
 
         int randomNumber1 = ThreadLocalRandom.current().nextInt(1,99);
         int randomNumber2 = ThreadLocalRandom.current().nextInt(1, 999);
         int randomNumber3 = ThreadLocalRandom.current().nextInt(1, 9999);
         int sumNumbers = randomNumber1 + randomNumber2 + randomNumber3;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        String formattedDateTime = dataTokenGerado.format(formatter);
-        String formattedDateTimeExpiration = tokenExpirado.format(formatter);
-
         String tokens = String.valueOf((randomNumber1 * randomNumber2 * randomNumber3 * randomNumber2) / sumNumbers);
+
         tokens = tokens
                 .replace("2", "M")
                 .replace("4", "O")
@@ -33,23 +35,19 @@ public class Token {
                 .replace("-", "");
         this.token = tokens;
 
-        System.out.printf("""
-                *------------------------------Olá, Seu token foi gerado!------------------------------*
-                Token: %s                                              
-                Seu token foi criado as %s, e expira em %s                 
-                *--------------------------------------------------------------------------------------*
-                """.formatted(token, formattedDateTime, formattedDateTimeExpiration));
-        setCreated(true);
+        try {
+            con.getConexaoDoBanco().update("INSERT INTO token (token, dataHoraCriado, dataHoraExpira, fkUsuario) VALUES (?, ?, ?, ?)", this.token, formattedDateTime, formattedDateTimeExpiration, usuario.getIdUsuario());
+        } catch (Exception e) {
+            System.out.println("Erro ao inserir token!");
+        }
         return token;
     }
 
-    public Boolean isExpirado() {
-        if(LocalDateTime.now().isAfter(this.getTokenExpirado())) {
-            return true;
-        } else {
-            return false;
-        }
+    public Boolean isExpired() {
+        LocalDateTime dataHoraAtual = LocalDateTime.now();
+        return dataHoraAtual.isAfter(this.dataHoraExpira);
     }
+
     public String getToken() {
         return token;
     }
@@ -58,37 +56,4 @@ public class Token {
         this.token = token;
     }
 
-    public LocalDateTime getDataTokenGerado() {
-        return dataTokenGerado;
-    }
-
-    public void setDataTokenGerado(LocalDateTime dataTokenGerado) {
-        this.dataTokenGerado = dataTokenGerado;
-    }
-
-    public LocalDateTime getTokenExpirado() {
-        return tokenExpirado;
-    }
-
-    public void setTokenExpirado(LocalDateTime tokenExpirado) {
-        this.tokenExpirado = tokenExpirado;
-    }
-
-    public Boolean getCreated() {
-        return isCreated;
-    }
-
-    public void setCreated(Boolean created) {
-        isCreated = created;
-    }
-
-    @Override
-    public String toString() {
-        return "Token{" +
-                "token='" + token + '\'' +
-                ", isCreated=" + isCreated +
-                ", dataTokenGerado=" + dataTokenGerado +
-                ", tokenExpirado=" + tokenExpirado +
-                '}';
-    }
 }
