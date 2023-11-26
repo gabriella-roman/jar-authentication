@@ -1,0 +1,11 @@
+Componente\Utilitarios.class
+Autenticação\Token.class
+Componente\Especificacao.class
+Componente\Monitoramento.class
+Componente\Registro.class
+Autenticação\Usuario.class
+Conexao\Conexao.class
+Autenticação\Slack.class
+Autenticação\Autenticacao.class
+Componente\Componente.class
+Componente\Alerta.class
