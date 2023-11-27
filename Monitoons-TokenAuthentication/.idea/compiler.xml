@@ -6,9 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Monitoons" />
         <module name="Monitoons-Sketch-Pro" />
-        <module name="Monitoons-Authentication" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Monitoons-Authentication" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

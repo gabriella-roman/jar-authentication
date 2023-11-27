@@ -1,9 +1,11 @@
 package Conexao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Objects;

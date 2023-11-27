@@ -1,5 +1,6 @@
 package Autenticação;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -10,7 +11,7 @@ public class Slack {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final String URL = "https://hooks.slack.com/services/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";
 
-    public static void enviarMensagem(JSONObject content) throws IOException, InterruptedException {
+    public static void enviarMensagem(JsonObject content) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(URL))
                 .header("accept", "application/json")

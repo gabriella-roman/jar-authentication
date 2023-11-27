@@ -1,6 +1,6 @@
 package Autenticação;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Autenticacao {
     private final Scanner scanner;
     private final JdbcTemplate jdbcTemplate;
-    JSONObject json = new JSONObject();
+    JsonObject json = new JsonObject();
 
     public Autenticacao(Scanner scanner, JdbcTemplate jdbcTemplate) {
         this.scanner = scanner;
@@ -58,10 +58,11 @@ public class Autenticacao {
     }
 
     private void enviarTokenAutenticacao(String nomeUsuario, Usuario usuario, Token token) throws IOException, InterruptedException {
+
         token.gerarToken(usuario);
 
-        JSONObject json = new JSONObject();
-        json.put("text", "Olá, " + nomeUsuario + "! Seu token de autenticação é: " + token.getToken() + "." + "\n" + "O token expira em 5 minutos.");
+        JsonObject json = new JsonObject();
+        json.addProperty("text", "Olá, " + nomeUsuario + "! Seu token de autenticação é: " + token.getToken() + "." + "\n" + "O token expira em 5 minutos.");
         Slack.enviarMensagem(json);
 
         System.out.println("No canal token-autenticacao foi enviado um token para você. Insira-o no console para continuar: ");
@@ -91,7 +92,7 @@ public class Autenticacao {
                 } else {
                     System.out.println("Token expirado! Iremos gerar um novo token para você.");
                     token.gerarToken(usuario);
-                    json.put("text", "Olá, " + usuario.getNome() + "! Seu token de autenticação é: " + token.getToken() + "." + "\n" + "O token expira em 5 minutos.");
+                    json.addProperty("text", "Olá, " + usuario.getNome() + "! Seu token de autenticação é: " + token.getToken() + "." + "\n" + "O token expira em 5 minutos.");
                     Slack.enviarMensagem(json);
                     System.out.println("Foi enviado um novo token para você.");
                 }
