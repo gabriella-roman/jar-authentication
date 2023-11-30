@@ -1,15 +1,15 @@
 Componente\Utilitarios.class
 Autenticação\Token.class
 Componente\Registro.class
-Componente\App$1.class
 Autenticação\Slack.class
+App.class
 Autenticação\Autenticacao.class
-Componente\App.class
 Monitoramento\MonitoramentoMySQL.class
 Componente\Especificacao.class
 Autenticação\Usuario.class
 Conexao\Conexao.class
 Conexao\ConexaoSQLServer.class
+App$1.class
 Componente\Componente.class
 Componente\Alerta.class
 Monitoramento\MonitoramentoMsSQL.class

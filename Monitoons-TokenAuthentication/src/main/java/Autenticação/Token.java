@@ -36,6 +36,7 @@ public class Token {
         this.token = tokens;
 
         try {
+            System.out.println("Token gerado: " + this.token);
             con.getConexaoDoBanco().update("INSERT INTO token (token, dataHoraCriado, dataHoraExpira, fkUsuario) VALUES (?, GETDATE(), DATEADD(MINUTE, 5, GETDATE()), ?)", this.token, usuario.getIdUsuarioSQLServer());
         } catch (Exception e) {
             System.out.println(e);
