@@ -1,6 +1,6 @@
 package Autenticação;
 
-import Conexao.Conexao;
+import Conexao.ConexaoSQLServer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,9 +11,9 @@ public class Token {
     private LocalDateTime dataHoraCriado;
     private LocalDateTime dataHoraExpira;
 
-    Conexao con = new Conexao();
+    private ConexaoSQLServer con;
     public String gerarToken(Usuario usuario) {
-
+        this.con = new ConexaoSQLServer();
         this.dataHoraCriado = LocalDateTime.now();
         this.dataHoraExpira = this.dataHoraCriado.plusMinutes(5);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -36,9 +36,9 @@ public class Token {
         this.token = tokens;
 
         try {
-            con.getConexaoDoBanco().update("INSERT INTO token (token, dataHoraCriado, dataHoraExpira, fkUsuario) VALUES (?, ?, ?, ?)", this.token, formattedDateTime, formattedDateTimeExpiration, usuario.getIdUsuario());
+            con.getConexaoDoBanco().update("INSERT INTO token (token, dataHoraCriado, dataHoraExpira, fkUsuario) VALUES (?, GETDATE(), DATEADD(MINUTE, 5, GETDATE()), ?)", this.token, usuario.getIdUsuarioSQLServer());
         } catch (Exception e) {
-            System.out.println("Erro ao inserir token!");
+            System.out.println(e);
         }
         return token;
     }

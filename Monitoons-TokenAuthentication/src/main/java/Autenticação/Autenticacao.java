@@ -2,7 +2,6 @@ package Autenticação;
 
 import com.google.gson.JsonObject;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -16,45 +15,11 @@ public class Autenticacao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void realizarAutenticacao(Usuario usuario) throws IOException, InterruptedException {
-        String email = obterEmail();
-
-        while (!usuario.emailExiste(email)) {
-            System.out.println("Seu email não está cadastrado em nosso sistema. Cheque as credenciais!");
-            email = obterEmail();
+    public void concluirAutenticacao(String email, Usuario usuario, Token token) throws IOException, InterruptedException {
+        if(usuario.logar()){
+            enviarTokenAutenticacao(usuario.getNome(), usuario, token);
         }
 
-        realizarAutenticacaoSenha(email, usuario);
-    }
-
-    private String obterEmail() {
-        System.out.println("Insira seu email: ");
-        return scanner.nextLine();
-    }
-
-    private void realizarAutenticacaoSenha(String email, Usuario usuario) throws IOException, InterruptedException {
-        Boolean senhaCorreta = false;
-        Token token = new Token();
-
-        while (!senhaCorreta) {
-            System.out.println("Insira sua senha: ");
-            String senha = scanner.nextLine();
-            senhaCorreta = usuario.senhaCorreta(email, senha);
-
-            if (!senhaCorreta) {
-                System.out.println("Senha incorreta! Tente novamente.");
-            } else {
-                concluirAutenticacao(email, usuario, token);
-            }
-        }
-    }
-
-    private void concluirAutenticacao(String email, Usuario usuario, Token token) throws IOException, InterruptedException {
-        Integer idUsuario = jdbcTemplate.queryForObject("SELECT idUsuario FROM usuario WHERE email = ?", Integer.class, email);
-        usuario.setIdUsuario(idUsuario);
-        String nomeUsuario = jdbcTemplate.queryForObject("SELECT nomeUsuario FROM usuario WHERE email = ?", String.class, email);
-        System.out.println("Bem vindo(a), " + nomeUsuario + "!");
-        enviarTokenAutenticacao(nomeUsuario, usuario, token);
     }
 
     private void enviarTokenAutenticacao(String nomeUsuario, Usuario usuario, Token token) throws IOException, InterruptedException {
@@ -72,9 +37,12 @@ public class Autenticacao {
 
     private void validarToken(Usuario usuario, Token token) throws IOException, InterruptedException {
         String tokenDoBanco = jdbcTemplate.queryForObject(
-                "SELECT token FROM token WHERE fkUsuario = ? ORDER BY STR_TO_DATE(dataHoraCriado, '%d-%m-%Y %H:%i') DESC LIMIT 1",
+                "SELECT TOP 1 token\n" +
+                        "FROM token\n" +
+                        "WHERE fkUsuario = ?\n" +
+                        "ORDER BY CONVERT(datetime, dataHoraCriado, 103) DESC",
                 String.class,
-                usuario.getIdUsuario()
+                usuario.getIdUsuarioSQLServer()
         );
 
         String tokenUsuario;

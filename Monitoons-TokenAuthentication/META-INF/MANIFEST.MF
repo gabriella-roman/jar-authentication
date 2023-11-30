@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: Componente.Monitoramento
+Main-Class: Componente.App
 
